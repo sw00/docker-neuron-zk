@@ -17,5 +17,5 @@ echo $NOTESDIR
 [ -z "$NOTESDIR" ] && \
 	echo "Please specify the notes directory with '-d <NOTESDIR>'."
 
-docker run -it --rm sw00/neuron-zk "$NOTESDIR" $@
+docker run -it --rm -v "$NOTESDIR":/data sw00/neuron-zk $@
 
