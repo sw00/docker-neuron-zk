@@ -6,5 +6,6 @@ RUN cachix use srid
 RUN nix-env -if https://github.com/srid/neuron/archive/master.tar.gz
 
 VOLUME /data
+ADD entrypoint.sh .
 
-CMD ["neuron", "--zettelkasten-dir", "/data"]
+ENTRYPOINT ["entrypoint.sh"]

@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+OPTIND=1 
+NOTESDIR=''
+
+while getopts "d:" opt; do 
+	case "$opt" in
+		d) NOTESDIR=$OPTARG
+		   ;;
+	esac
+done
+
+shift $((OPTIND-1))
+
+[ "${1:-}" = "--" ] && shift
+
+echo $NOTESDIR
+[ -z "$NOTESDIR" ] && \
+	echo "Please specify the notes directory with '-d <NOTESDIR>'."
+
+docker run -it --rm sw00/neuron-zk "$NOTESDIR" $@
+
