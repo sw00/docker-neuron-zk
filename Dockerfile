@@ -8,4 +8,4 @@ RUN nix-env -if https://github.com/srid/neuron/archive/master.tar.gz
 VOLUME /data
 ADD entrypoint.sh .
 
-ENTRYPOINT ["entrypoint.sh"]
+ENTRYPOINT ["/entrypoint.sh"]
