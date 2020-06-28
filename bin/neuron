@@ -1,21 +1,26 @@
 #!/usr/bin/env bash
-OPTIND=1 
-NOTESDIR=''
+DOCKER_RUN_ARGS=(-it --rm)
+NEURON_CMD_ARGS=()
 
-while getopts "d:" opt; do 
-	case "$opt" in
-		d) NOTESDIR=$OPTARG
-		   ;;
+while [[ "$#" -gt 0 ]]; do
+	case $1 in
+		-d|--zettelkasten-dir) 
+			DOCKER_RUN_ARGS+=(-v "$2:/data");
+			shift ;;
+		-s|--serve) 
+			LISTEN_PORT=$(echo $2 | cut -d: -f2)
+			DOCKER_RUN_ARGS+=(-p $LISTEN_PORT:8080)
+			NEURON_CMD_ARGS+=(-s 0.0.0.0:8080)
+			shift ;;
+		-o|--output-dir)
+			DOCKER_RUN_ARGS+=(-v "$2:/output")
+			NEURON_CMD_ARGS+=(-o /output)
+			shift ;;
+		*) NEURON_CMD_ARGS+=("$1") ;;
 	esac
+	shift
 done
 
-shift $((OPTIND-1))
-
-[ "${1:-}" = "--" ] && shift
-
-echo $NOTESDIR
-[ -z "$NOTESDIR" ] && \
-	echo "Please specify the notes directory with '-d <NOTESDIR>'."
-
-docker run -it --rm -v "$NOTESDIR":/data sw00/neuron-zk $@
+set -x
+docker run ${DOCKER_RUN_ARGS[@]} sw00/neuron-zk ${NEURON_CMD_ARGS[@]} $@
 
